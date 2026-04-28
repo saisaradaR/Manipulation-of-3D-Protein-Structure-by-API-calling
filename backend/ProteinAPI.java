@@ -9,8 +9,27 @@ public class ProteinAPI {
 
         HttpServer server = HttpServer.create(new InetSocketAddress(8080), 0);
 
-        // ── /protein?query=hemoglobin  → returns PDB file text
-        server.createContext("/protein", exchange -> {
+        HttpServer server = HttpServer.create(new InetSocketAddress(8080), 0);
+
+// ✅ ADD THIS BLOCK HERE
+server.createContext("/", exchange -> {
+    String response = new String(
+        java.nio.file.Files.readAllBytes(
+            java.nio.file.Paths.get("index.html")
+        ),
+        java.nio.charset.StandardCharsets.UTF_8
+    );
+
+    exchange.getResponseHeaders().add("Content-Type", "text/html");
+    exchange.sendResponseHeaders(200, response.getBytes().length);
+
+    try (java.io.OutputStream os = exchange.getResponseBody()) {
+        os.write(response.getBytes());
+    }
+});
+
+// ── /protein?query=hemoglobin
+server.createContext("/protein", exchange -> {
             exchange.getResponseHeaders().add("Access-Control-Allow-Origin", "*");
             exchange.getResponseHeaders().add("Content-Type", "text/plain; charset=utf-8");
 
@@ -50,7 +69,12 @@ public class ProteinAPI {
             try {
                 System.out.println("User input: " + input);
 
-                String pdbId = resolveToPdbId(input);
+                String searchQuery = input;
+                if (!organism.isEmpty()) {
+                searchQuery += " " + organism;
+}
+
+                String pdbId = resolveToPdbId(searchQuery);
                 System.out.println("Resolved PDB ID: " + pdbId);
 
                 String pdbData = fetchPdb(pdbId);
