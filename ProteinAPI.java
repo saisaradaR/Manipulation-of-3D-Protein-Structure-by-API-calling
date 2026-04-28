@@ -93,6 +93,7 @@ public class ProteinAPI {
 
         server.setExecutor(java.util.concurrent.Executors.newFixedThreadPool(4));
         server.start();
+        Thread.currentThread().join();
         System.out.println("✅ Server running at http://localhost:8080");
         System.out.println("   Try: http://localhost:8080/protein?query=hemoglobin");
     }
