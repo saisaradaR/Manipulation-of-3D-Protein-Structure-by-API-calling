@@ -7,7 +7,9 @@ public class ProteinAPI {
 
     public static void main(String[] args) throws Exception {
 
-        HttpServer server = HttpServer.create(new InetSocketAddress(8080), 0);
+    int port = Integer.parseInt(System.getenv().getOrDefault("PORT", "8080"));
+    System.out.println("Server running on port: " + port);
+    HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
 
         // ── /protein?query=hemoglobin  → returns PDB file text
         server.createContext("/protein", exchange -> {
