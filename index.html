@@ -293,37 +293,31 @@
     viewer.render();
 }
 function applyStyle(type) {
-    // ✅ Always clear ALL previous styles AND surfaces first
-    viewer.setStyle({}, {});
+
+    viewer.clear();
+    viewer.addModel(currentPdbData, "pdb");
     viewer.removeAllSurfaces();
 
     if (type === "cartoon") {
         viewer.setStyle({}, { cartoon: { color: "spectrum" } });
-
-    } else if (type === "stick") {
+    } 
+    else if (type === "stick") {
         viewer.setStyle({}, { stick: { colorscheme: "Jmol", radius: 0.15 } });
-
-    } else if (type === "sphere") {
+    } 
+    else if (type === "sphere") {
         viewer.setStyle({}, { sphere: { colorscheme: "Jmol", scale: 0.3 } });
-
-    } else if (type === "surface") {
-        viewer.setStyle({}, { cartoon: { color: "spectrum", opacity: 0.5 } });
+    } 
+    else if (type === "surface") {
         viewer.addSurface($3Dmol.SurfaceType.VDW, {
             opacity: 0.75,
             colorscheme: "whiteCarbon"
-        }, {}, {}, function() {
-            viewer.render(); // ✅ render AFTER surface finishes computing
         });
-        return; // ✅ skip the render() at the bottom — callback handles it
-
-    } else if (type === "line") {
+    } 
+    else if (type === "line") {
         viewer.setStyle({}, { line: { colorscheme: "Jmol", linewidth: 2 } });
-
-    } else if (type === "cross") {
-        viewer.setStyle({}, { cross: { colorscheme: "Jmol", scale: 0.3 } });
     }
 
-    // Render for all non-surface styles
+    viewer.zoomTo();
     viewer.render();
 }
 
