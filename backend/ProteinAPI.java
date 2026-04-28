@@ -22,15 +22,24 @@ public class ProteinAPI {
             // Parse query param
             String query = exchange.getRequestURI().getQuery();
             String input = "";
+            String organism = "";
             if (query != null) {
                 for (String param : query.split("&")) {
-                    if (param.startsWith("query=")) {
-                        input = URLDecoder.decode(
-                            param.substring(6), StandardCharsets.UTF_8
-                        ).trim();
-                        break;
-                    }
-                }
+
+    if (param.startsWith("query=")) {
+        input = URLDecoder.decode(
+            param.substring(6),
+            StandardCharsets.UTF_8
+        ).trim();
+    }
+
+    if (param.startsWith("organism=")) {
+        organism = URLDecoder.decode(
+            param.substring(9),
+            StandardCharsets.UTF_8
+        ).trim();
+    }
+}
             }
 
             if (input.isEmpty()) {
@@ -323,7 +332,7 @@ public class ProteinAPI {
 
             if (!first) result.append(",");
             result.append("{\"id\":\"").append(id)
-                  .append("\",\"title\":\"").append(title).append("\"}");
+                .append("\",\"title\":\"").append(title).append("\"}");
             first = false;
             searchFrom = q2 + 1;
         }
@@ -363,8 +372,8 @@ public class ProteinAPI {
             if (q1 <= 0 || q2 <= q1) return pdbId;
 
             return json.substring(q1, q2)
-                       .replace("\\\"", "'")
-                       .replace("\\", "");
+                    .replace("\\\"", "'")
+                    .replace("\\", "");
 
         } catch (Exception e) {
             return pdbId;
