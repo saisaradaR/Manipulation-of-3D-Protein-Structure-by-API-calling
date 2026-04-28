@@ -197,7 +197,7 @@
     });
 
     function fetchSuggestions(query) {
-        fetch("http://localhost:8080/suggest?query=" + encodeURIComponent(query))
+    fetch("https://threed-protein-structure-manipulator.onrender.com/protein?query=" + query)
             .then(r => r.json())
             .then(items => {
                 const box = document.getElementById("suggestions");
@@ -234,7 +234,7 @@
         document.getElementById("loadBtn").disabled = true;
         document.getElementById("infoPanel").style.display = "none";
 
-        const url = "http://localhost:8080/protein?query="
+        const url = "https://threed-protein-structure-manipulator.onrender.com/protein?query="
                   + encodeURIComponent(query) + "&t=" + Date.now();
 
         fetch(url)
@@ -277,30 +277,21 @@
 
     // ── Render into 3Dmol viewer ─────────────────────────────────────
     function renderStructure(pdbData) {
+
+    if (!viewer) {
         const container = document.getElementById("viewer");
-        container.innerHTML = "";   // clear old canvas
-
         viewer = $3Dmol.createViewer(container, { backgroundColor: "black" });
-        viewer.addModel(pdbData, "pdb");
-
-        applyStyle(currentStyle);   // apply whatever style was last selected
-
-        viewer.zoomTo();
-        viewer.render();
     }
 
-   // ── Style switcher ───────────────────────────────────────────────
-function setStyle(type) {
-    currentStyle = type;
+    viewer.clear(); // 🔥 clear old model
 
-    // Update button highlight
-    document.querySelectorAll(".style-btn").forEach(b => b.classList.remove("active"));
-    document.getElementById("btn-" + type).classList.add("active");
+    viewer.addModel(pdbData, "pdb");
 
-    if (!viewer) return;
-    applyStyle(type);
+    applyStyle(currentStyle);
+
+    viewer.zoomTo();
+    viewer.render();
 }
-
 function applyStyle(type) {
     // ✅ Always clear ALL previous styles AND surfaces first
     viewer.setStyle({}, {});
